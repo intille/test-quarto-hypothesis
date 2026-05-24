@@ -70,21 +70,121 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script type="application/json" class="js-hypothesis-config">
+<script>
 
-{
+(function() {
 
-  "theme": "classic",
+  var GROUP_ID = "Giwwvnix";
 
-  "openSidebar": true,
+  var GROUP_JOIN_URL = "https://hypothes.is/groups/Giwwvnix/mytestprivategroup";
 
-  "groupsAllowlist": ["Giwwvnix"]
 
-}
+
+  function loadHypothesis() {
+
+    var config = document.createElement('script');
+
+    config.type = 'application/json';
+
+    config.className = 'js-hypothesis-config';
+
+    config.text = JSON.stringify({ "groupsAllowlist": [GROUP_ID] });
+
+    document.head.appendChild(config);
+
+
+
+    var embed = document.createElement('script');
+
+    embed.async = true;
+
+    embed.src = 'https://hypothes.is/embed.js';
+
+    document.head.appendChild(embed);
+
+  }
+
+
+
+  function showGate() {
+
+    var gate = document.createElement('div');
+
+    gate.id = 'hypothesis-gate';
+
+    gate.style.cssText = 'position:fixed;bottom:1em;right:1em;max-width:320px;background:#f8f9fa;border:1px solid #ccc;border-radius:8px;padding:1em;box-shadow:0 2px 10px rgba(0,0,0,0.1);z-index:9999;font-size:0.9em;line-height:1.4;';
+
+    gate.innerHTML =
+
+      '<strong>💬 Want to comment?</strong>' +
+
+      '<p style="margin:0.5em 0;">Commenting on this site requires joining our discussion group on Hypothes.is.</p>' +
+
+      '<ol style="padding-left:1.5em;margin:0.5em 0;">' +
+
+        '<li><a href="' + GROUP_JOIN_URL + '" target="_blank" rel="noopener">Join the group</a></li>' +
+
+        '<li><a href="https://hypothes.is/login" target="_blank" rel="noopener">Sign in to Hypothes.is</a></li>' +
+
+        '<li><button id="enable-hyp-btn" style="background:#1976d2;color:white;border:0;padding:0.4em 0.8em;border-radius:4px;cursor:pointer;font-size:0.9em;">I\'ve joined — enable commenting</button></li>' +
+
+      '</ol>' +
+
+      '<button id="dismiss-hyp-btn" style="background:none;border:0;cursor:pointer;color:#666;font-size:0.85em;padding:0;">No thanks, just reading</button>';
+
+    document.body.appendChild(gate);
+
+
+
+    document.getElementById('enable-hyp-btn').addEventListener('click', function() {
+
+      localStorage.setItem('hyp-enabled', 'true');
+
+      gate.remove();
+
+      loadHypothesis();
+
+    });
+
+    document.getElementById('dismiss-hyp-btn').addEventListener('click', function() {
+
+      gate.remove();
+
+    });
+
+  }
+
+
+
+  function start() {
+
+    if (localStorage.getItem('hyp-enabled') === 'true') {
+
+      loadHypothesis();
+
+    } else {
+
+      showGate();
+
+    }
+
+  }
+
+
+
+  if (document.readyState === 'loading') {
+
+    document.addEventListener('DOMContentLoaded', start);
+
+  } else {
+
+    start();
+
+  }
+
+})();
 
 </script>
-
-<script async="" src="https://hypothes.is/embed.js"></script>
 
 
 <link rel="stylesheet" href="styles.css">
